@@ -17,9 +17,9 @@ Frontend часть системы аутентификации и автори�
 ### CSRF Protection
 ```typescript
 api.interceptors.request.use(async config => {
-    if (config.url !== '/api/csrf-token') {
+    if (config.url !== '/csrf-token') {
         try {
-            await api.get('/api/csrf-token')
+            await api.get('/csrf-token')
             const csrfToken = Cookies.get('csrf')
             if (csrfToken) {
                 const [token] = csrfToken.split('|')
@@ -52,7 +52,7 @@ npm install
 
 2. Создайте `.env` файл:
 ```
-VITE_API_URL=http://localhost:3000
+VITE_API_URL=http://localhost:3000/api
 ```
 
 3. Запустите проект:
