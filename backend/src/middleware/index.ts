@@ -6,8 +6,20 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+const allowedOrigins = [
+	process.env.FRONTEND_URL || 'http://localhost:8080',
+	'http://localhost',
+	'http://localhost:80',
+]
+
 export const corsMiddleware = cors({
-	origin: process.env.FRONTEND_URL || 'http://localhost:8080',
+	origin: (origin, callback) => {
+		if (!origin || allowedOrigins.includes(origin)) {
+			callback(null, true)
+		} else {
+			callback(new Error('Not allowed by CORS'))
+		}
+	},
 	credentials: true,
 })
 
@@ -16,7 +28,6 @@ export const cookieMiddleware = cookieParser()
 const { doubleCsrfProtection, generateToken } = doubleCsrf({
 	getSecret: () => process.env.CSRF_SECRET || 'your-csrf-secret-key',
 	cookieName: 'csrf',
-	size: 64,
 	cookieOptions: {
 		httpOnly: false,
 		sameSite: 'lax',
